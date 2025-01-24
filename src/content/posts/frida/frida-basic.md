@@ -1,6 +1,7 @@
 ---
 title: frida - những bước đầu tiên
 published: 2025-01-23
+updated: 2025-01-24
 description: 'frida - những bước đầu tiên'
 image: ''
 tags: [frida]
@@ -142,6 +143,41 @@ Java.perform(function() {
     }
 })
 ```
+
+## PicoCTF - droids4
+
+![alt text](images/{F69AF8AD-BCE9-4DB8-8391-AA2ABA79C219}.png)
+
+Reverse đoạn code lấy password có thể nhờ chatgpt, thu được password `alphabetsoup`:
+
+![alt text](images/{5E726E70-09E2-4588-B3E0-BAB39447922A}.png)
+
+![alt text](images/{46CE399B-75E1-47B2-BF56-0CF04595503D}.png)
+
+Nhập xong chỉ trả về "call it" vì `return input.equals(password) ? "call it" : "NOPE";`. Lẽ ra khi password đúng cần trả về hàm `cardamom(password)`. Frida hook hàm `getFlag()` rồi gọi hàm `cardamom()` trong đó với input là `password` tìm được ở trên rồi in ra thôi:
+
+```
+function main() {
+    console.log("Start hooking ...");
+
+    setTimeout(function() {
+        Java.perform(function() {
+            var FlagstaffHill = Java.use("com.hellocmu.picoctf.FlagstaffHill");
+            FlagstaffHill.getFlag.implementation = function(input, ctx) {
+                var password = "alphabetsoup";
+                var flag = FlagstaffHill.cardamom(password);
+                console.log(flag);
+                var result = this.getFlag(input, ctx);
+                return result;
+            }
+        });
+    }, 2000);
+}
+
+setImmediate(main);
+```
+
+![alt text](images/{4D8A1C16-18BD-49B9-8696-6E9204AD72E1}.png)
 
 # Lưu lại vài link
 
