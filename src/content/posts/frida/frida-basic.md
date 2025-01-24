@@ -1,10 +1,10 @@
 ---
 title: frida - những bước đầu tiên
-published: 2025-01-24
+published: 2025-01-23
 description: 'frida - những bước đầu tiên'
 image: ''
 tags: [frida]
-category: ''
+category: 'Mobile security'
 draft: false 
 lang: ''
 ---
