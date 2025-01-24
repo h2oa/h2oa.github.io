@@ -1,9 +1,9 @@
 ---
-title: frida - những bước đầu tiên
-published: 24-01-2025
-description: 'frida - những bước đầu tiên'
+title: frida - basic
+published: 2025-01-24
+description: ''
 image: ''
-tags: ["frida"]
+tags: []
 category: ''
 draft: false 
 lang: ''
