@@ -179,6 +179,100 @@ setImmediate(main);
 
 ![alt text](images/{4D8A1C16-18BD-49B9-8696-6E9204AD72E1}.png)
 
+## UnCrackable Level 1
+
+Bài viết tham khảo: https://viblo.asia/p/write-up-owasp-uncrackable-level-1-luyen-tap-co-ban-ve-hooking-functions-bang-frida-va-chen-smali-code-LzD5dgb4ljY
+
+apk file: https://github.com/h2oa/h2oa.github.io/tree/main/src/assets/apks/UnCrackable-Level1.apk
+
+Ứng dụng detect root khi mở:
+
+![alt text](images/{0EA19DE3-3076-46DC-9949-242891E8B7CB}.png)
+
+Nguyên nhân do kiểm tra các điều kiện `c.a() || c.b() || c.c()`
+
+![alt text](images/{B5A46DCD-49E5-40DE-AA00-42F3FE905D62}.png)
+
+Hook frida sửa hết thành `return false`:
+
+```
+let c = Java.use("sg.vantagepoint.a.c");
+c.a.implementation = function () {
+    return false;
+};
+c.b.implementation = function () {
+    return false;
+};
+c.c.implementation = function () {
+    return false;
+};
+```
+
+Hook xong vẫn không được, xem lại bài viết nhận ra nguyên nhân do root check được gọi ngay khi app khởi động (`onCreate()`), frida chưa kịp hook vào. Chuyển sang ý tưởng hook thay đổi chức năng của buttun OK, để bấm xong không thoát ra khỏi app, viết lại hàm luôn không còn `rertun` nữa:
+
+```
+let hookexit = Java.use("java.lang.System");
+hookexit.exit.implementation = function() {
+    console.log("Exit cancelled");
+};
+```
+
+Bấm OK xong app không còn thoát ra, chức năng cho nhập input nhưng cần verify:
+
+![alt text](images/{1003FF31-3A5B-40B5-8584-C8B79E581ABC}.png)
+
+Xem hàm `verify()`:
+
+![alt text](images/{2DB8B4D5-6D36-42E3-B5FE-0B1544DD9CEC}.png)
+
+Hook tiếp `a.a(obj)`:
+
+```
+let a = Java.use("sg.vantagepoint.uncrackable1.a");
+a["a"].implementation = function (str) {
+    return true;
+};
+```
+
+![alt text](images/{C3F9AFB9-DF60-4D3F-AE4D-5AA2868C5CDC}.png)
+
+Cứ tưởng là kết thúc nhưng bài này có flag, input phải là flag, nãy trực tiếp hook cho thành auto true luôn :))))
+
+Xem hàm này:
+
+![alt text](images/{BA8558A1-DE52-4EED-840E-90F81A122DF7}.png)
+
+Flag chính là `bArr`, hook tiếp vào hàm `sg.vantagepoint.a.a.a` rồi in ra kết quả hàm là được:
+
+```
+function main() {
+    console.log("Start hooking ...");
+
+    setTimeout(function() {
+        Java.perform(function() {
+            let hookexit = Java.use("java.lang.System");
+            hookexit.exit.implementation = function() {
+                console.log("Exit cancelled");
+            };
+            let a_bArr_use = Java.use("sg.vantagepoint.a.a");
+            a_bArr_use["a"].implementation = function (bArr, bArr2) {
+                var result = this.a(bArr, bArr2);
+                console.log("Result: " + result); 
+                return result;
+            };
+        });
+    });
+}
+
+setImmediate(main);
+```
+
+![alt text](images/{91FEC1F6-BD1F-451F-8798-C287236F19B7}.png)
+
+Decode bằng CyberChef > Magic:
+
+![alt text](images/{BAFDDF54-963C-4DC6-BDEC-8F6640EE4416}.png)
+
 # Lưu lại vài link
 
 Paste image và tự lưu vào folder custom: https://www.youtube.com/watch?v=L6KKzbVD-Y8
