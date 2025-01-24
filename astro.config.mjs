@@ -21,7 +21,7 @@ import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://h2oa.github.io/",
+  site: "https://h2oa.github.io",
   base: "/",
   trailingSlash: "always",
   integrations: [
