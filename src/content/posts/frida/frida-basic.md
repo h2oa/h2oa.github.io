@@ -179,6 +179,63 @@ setImmediate(main);
 
 ![alt text](images/{4D8A1C16-18BD-49B9-8696-6E9204AD72E1}.png)
 
+## UnCrackable Level 1
+
+Bài viết tham khảo: https://viblo.asia/p/write-up-owasp-uncrackable-level-1-luyen-tap-co-ban-ve-hooking-functions-bang-frida-va-chen-smali-code-LzD5dgb4ljY
+
+apk file: https://github.com/h2oa/h2oa.github.io/tree/main/src/assets/apks/UnCrackable-Level1.apk
+
+Ứng dụng detect root khi mở:
+
+![alt text](images/{0EA19DE3-3076-46DC-9949-242891E8B7CB}.png)
+
+Nguyên nhân do kiểm tra các điều kiện `c.a() || c.b() || c.c()`
+
+![alt text](images/{B5A46DCD-49E5-40DE-AA00-42F3FE905D62}.png)
+
+Hook frida sửa hết thành `return false`:
+
+```
+let c = Java.use("sg.vantagepoint.a.c");
+c.a.implementation = function () {
+    return false;
+};
+c.b.implementation = function () {
+    return false;
+};
+c.c.implementation = function () {
+    return false;
+};
+```
+
+Hook xong vẫn không được, xem lại bài viết nhận ra nguyên nhân do root check được gọi ngay khi app khởi động (`onCreate()`), frida chưa kịp hook vào. Chuyển sang ý tưởng hook thay đổi chức năng của buttun OK, để bấm xong không thoát ra khỏi app, viết lại hàm luôn không còn `rertun` nữa:
+
+```
+let hookexit = Java.use("java.lang.System");
+hookexit.exit.implementation = function() {
+    console.log("Exit cancelled");
+};
+```
+
+Bấm OK xong app không còn thoát ra, chức năng cho nhập input nhưng cần verify:
+
+![alt text](images/{1003FF31-3A5B-40B5-8584-C8B79E581ABC}.png)
+
+Xem hàm `verify()`:
+
+![alt text](images/{2DB8B4D5-6D36-42E3-B5FE-0B1544DD9CEC}.png)
+
+Hook tiếp `a.a(obj)`:
+
+```
+let a = Java.use("sg.vantagepoint.uncrackable1.a");
+a["a"].implementation = function (str) {
+    return true;
+};
+```
+
+![alt text](images/{22083A9E-6CAF-4476-A498-B3FE8A1AA2AB}.png)
+
 # Lưu lại vài link
 
 Paste image và tự lưu vào folder custom: https://www.youtube.com/watch?v=L6KKzbVD-Y8
