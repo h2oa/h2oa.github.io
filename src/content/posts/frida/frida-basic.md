@@ -28,11 +28,11 @@ Frida server cài trong điện thoại, repo https://github.com/frida/frida/rel
 "i386" or "i686" are the basic 32-bit x86 or the Pentium Pro variant respectively, which is Android's "x86" ABI.
 ```
 
-![alt text]({A4546326-676C-42E7-ACF3-D59E81D83FB3}.png)
+![alt text](images/{A4546326-676C-42E7-ACF3-D59E81D83FB3}.png)
 
 Thường hay `adb push` vào `data/local/tmp`, rồi chạy frida server lên thôi `./frida-server-name &`, dấu `&` cho chạy ngầm:
 
-![alt text]({00C43D22-3527-4EB3-8BE3-7C542E947831}.png)
+![alt text](images/{00C43D22-3527-4EB3-8BE3-7C542E947831}.png)
 
 Listen port `-l 0.0.0.0:1337`, chưa rõ tác dụng, chắc sau dùng để debug.
 
@@ -54,7 +54,7 @@ pip3 install frida==16.6.4
 
 Check các package apk đang chạy `frida-ps -Ua`:
 
-![alt text]({C1928C7C-13A5-435E-84F4-77975CC21F0D}.png)
+![alt text](images/{C1928C7C-13A5-435E-84F4-77975CC21F0D}.png)
 
 Chương trình đơn giản spawn ứng dụng:
 
@@ -70,7 +70,7 @@ frida -U -f <package.name> -l <frida.js>
 
 Chạy và in ra console "hello":
 
-![alt text]({D73BAF2B-16C9-41D8-85DD-FE942E0E09DE}.png)
+![alt text](images/{D73BAF2B-16C9-41D8-85DD-FE942E0E09DE}.png)
 
 # IV. Một vài bài CTF luyện tập
 
@@ -78,11 +78,11 @@ Chạy và in ra console "hello":
 
 apk file: https://github.com/h2oa/h2oa.github.io/tree/master/assets/ctf/one.apk
 
-![alt text]({A5F0DCAB-9181-484E-A432-9744E9639800}.png)
+![alt text](images/{A5F0DCAB-9181-484E-A432-9744E9639800}.png)
 
 Hàm `getFlag()` so sánh input nhập vào với `String password = ctx.getString(R.string.password);`, nếu giống sẽ trả về flag (lấy từ lib `hellojni`). Dùng frida hook vào hàm `getFlag()` để in ra giá trị `password`. Chuyển đoạn Java `String password = ctx.getString(R.string.password);` sang js:
 
-![alt text]({B6B7D3B9-2B71-40EB-8DF0-9EE05E792DEF}.png)
+![alt text](images/{B6B7D3B9-2B71-40EB-8DF0-9EE05E792DEF}.png)
 
 ```
 var passwordResId = ctx.getResources().getIdentifier('password', 'string', ctx.getPackageName());
@@ -128,7 +128,7 @@ function main() {
 setImmediate(main);
 ```
 
-![alt text]({5D5F1A18-43C0-4740-AA9C-F1CAFCE504A8}.png)
+![alt text](images/{5D5F1A18-43C0-4740-AA9C-F1CAFCE504A8}.png)
 
 Một cách khác là hook vào hàm `Context.getString()`:
 
