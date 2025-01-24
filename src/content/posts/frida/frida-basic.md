@@ -234,8 +234,6 @@ a["a"].implementation = function (str) {
 };
 ```
 
-![alt text](images/{22083A9E-6CAF-4476-A498-B3FE8A1AA2AB}.png)
-
 # Lưu lại vài link
 
 Paste image và tự lưu vào folder custom: https://www.youtube.com/watch?v=L6KKzbVD-Y8
