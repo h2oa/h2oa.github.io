@@ -1,6 +1,6 @@
 ---
 title: frida with native
-published: 2025-01-24
+published: 2025-01-25
 description: 'frida with native'
 image: ''
 tags: [frida, native]
