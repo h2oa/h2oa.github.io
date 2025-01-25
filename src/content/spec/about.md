@@ -8,4 +8,4 @@ Paypal: `lengochoa`
 
 QR Bank:
 
-<img src="/assets/images/qrvcb.png" width="200" />
+<img src="https://github.com/h2oa/h2oa.github.io/blob/main/assets/images/qrvcb.png" width="200" />
