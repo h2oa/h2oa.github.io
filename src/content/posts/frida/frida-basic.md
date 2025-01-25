@@ -77,7 +77,7 @@ Chạy và in ra console "hello":
 
 ## PicoCTF - droids1
 
-apk file: https://github.com/h2oa/h2oa.github.io/assets/apks/one.apk
+apk file: https://github.com/h2oa/h2oa.github.io/blob/main/assets/apks/one.apk
 
 ![alt text](images/{A5F0DCAB-9181-484E-A432-9744E9639800}.png)
 
@@ -146,7 +146,7 @@ Java.perform(function() {
 
 ## PicoCTF - droids4
 
-apk file: https://github.com/h2oa/h2oa.github.io/assets/apks/droids4.apk
+apk file: https://github.com/h2oa/h2oa.github.io/blob/main/assets/apks/droids4.apk
 
 ![alt text](images/{F69AF8AD-BCE9-4DB8-8391-AA2ABA79C219}.png)
 
@@ -185,7 +185,7 @@ setImmediate(main);
 
 Bài viết tham khảo: https://viblo.asia/p/write-up-owasp-uncrackable-level-1-luyen-tap-co-ban-ve-hooking-functions-bang-frida-va-chen-smali-code-LzD5dgb4ljY
 
-apk file: https://github.com/h2oa/h2oa.github.io/assets/apks/UnCrackable-Level1.apk
+apk file: https://github.com/h2oa/h2oa.github.io/blob/main/assets/apks/UnCrackable-Level1.apk
 
 Ứng dụng detect root khi mở:
 
