@@ -8,4 +8,4 @@ Paypal: `lengochoa`
 
 QR Bank:
 
-![](qrvcb.png){: width="200" }
+![](qrvcb.png)
