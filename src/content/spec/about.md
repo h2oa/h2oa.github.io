@@ -8,4 +8,4 @@ Paypal: `lengochoa`
 
 QR Bank:
 
-<img src="/blob/main/assets/images/qrvcb.png" width="200" />
+![](qrvcb.png){: width="200" }
