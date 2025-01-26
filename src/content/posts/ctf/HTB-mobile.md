@@ -325,3 +325,138 @@ Chú ý tới các file `.dll` vì đề bài gợi ý C#, quan sát thấy file
 ![alt text](images/{D07142FD-B1D2-4E71-8509-ED8EA83D979C}.png)
 
 Bài này dạy reverse file `.dll`, chắc vậy.
+
+## SAW
+
+Cài xong ứng dụng không bấm được, thử frida spawn lên được nhưng ứng dụng không mở lên:
+
+![alt text](images/{39394E3F-C051-4456-86D0-6A71F675136A}.png)
+
+Có vẻ trước hết cần bypass 2 điều kiện if đầu tiên:
+
+![alt text](images/{D62F44FB-1DE0-4C06-9F13-DB0D5BD1E9F7}.png)
+
+Có thể truyền data với Intent với:
+
+```
+adb shell am start -n com.stego.saw/com.stego.saw.MainActivity -e open sesame
+```
+
+![alt text](images/{166099CA-4B07-41B8-8108-F891C2583186}.png)
+
+Click thì crash tiếp, check adb log:
+
+![alt text](images/{F443E057-25A9-4F2E-A491-DE8AE7A0B95E}.png)
+
+Lỗi này là do ứng dụng mở một cửa số cần quyền `SYSTEM_ALERT_WINDOW` nhưng không được cấp, kiểm tra quyền và cấp lại:
+
+```
+adb shell appops get com.stego.saw SYSTEM_ALERT_WINDOW
+adb shell appops set com.stego.saw SYSTEM_ALERT_WINDOW allow
+```
+
+![alt text](images/{903363F2-1D5F-43AC-9FDA-B5796A7D9EFD}.png)
+
+![alt text](images/{BBAE73AE-48E1-4249-831D-B19619193BC7}.png)
+
+Lúc này ứng dụng có thể hoạt động bình thường, yêu cầu nhập để XOR:
+
+![alt text](images/{5A5C1D6E-589E-4551-BBAA-EE9110CC0941}.png)
+
+![alt text](images/{0FF885D7-06A2-44C8-B87E-921413284C00}.png)
+
+Hàm `a()` load từ `libdefault`:
+
+![alt text](images/{5E390678-3230-431E-B5DB-10E94648F481}.png)
+
+List các hàm load từ lib này không thấy có gì đặc biệt:
+
+![alt text](images/{A9681694-A669-4741-9DD3-3CD1D2C7D2E0}.png)
+
+Reverse nhìn thấy hàm `a()`, chuyển sang code C bằng F5:
+
+![alt text](images/{6336AD75-C824-43EA-82BB-9A1F9E5B1ADB}.png)
+
+Hàm này nhận vào hai tham số `FILE_PATH_PREFIX` và `answer` là kết quả chúng ta nhập vào, lúc này trở thành `v6`, `v7`, gọi tới hàm `_Z1aP7_JNIEnvP8_1()` nhận vào tham số `v6`, `v7`:
+
+![alt text](images/{710D3F89-58DE-4538-B87E-E4D8A7C6EEDB}.png)
+
+Gọi tới `_Z17_Z1aP7_JNIEnvP8_1PKcS0_`, `v6`, `v7` trở thành `src`, `a2`, trong này XOR (từng byte) `a2` với `l` kiểm tra điều kiện có bằng `m` hay không:
+
+![alt text](images/{14C273AC-F248-4480-BDC0-E1489529A90E}.png)
+
+Trace tìm được `l` và `m`:
+
+```
+l = {0x0A, 0x0B, 0x18, 0x0F, 0x5E, 0x31, 0x0C, 0x0F}
+m = {0x6C, 0x67, 0x28, 0x6E, 0x2A, 0x58, 0x62, 0x68}
+```
+
+![alt text](images/{E491DDF9-5443-4A65-8C80-D83BFE17A2FE}.png)
+
+Tính ngược lại được `a2` (hay `answer`) phải là `fl0ating`:
+
+```python
+# python
+l = [0x0A, 0x0B, 0x18, 0x0F, 0x5E, 0x31, 0x0C, 0x0F]
+m = [0x6C, 0x67, 0x28, 0x6E, 0x2A, 0x58, 0x62, 0x68]
+
+for i in range(8):
+  print(chr(l[i] ^ m[i]), end = "")
+```
+
+Tưởng nhập xong là ra flag nhưng chưa ...
+
+Đưa đoạn code sau cho chatgpt đọc (lẽ ra phải tự đọc mà trình rev kém quá) thì được biết sẽ ghi một cái gì đó (khả năng là flag) ra file (liên quan tới tham số thứ nhất trong hàm `a()`).
+
+![alt text](images/{3A758B45-F029-455D-B360-0F002BCBB781}.png)
+
+Tới đây nghỉ đến dùng `nm` đọc địa chỉ hàm `a()` vì nãy dùng `Module.enumerateExports` không tìm được hàm này.
+
+![alt text](images/{1DDECF9C-9D3C-46F6-9C12-52DD5AB07B1F}.png)
+
+Hook xong cũng không đọc được tham số thứ nhất ...
+
+Nghiên cứu kỹ lại đoạn code:
+
+```
+v8 = strlen(src);
+v9 = (char *)calloc(v8 + 2, 1uLL);
+strcpy(v9, src);
+*(_WORD *)&v9[strlen(v9)] = 0x68;
+```
+
+ChatGPT bảo `v9 = src + 0x68 + 0x00`, 0x69 là ký tự `h`, `0x00` kết thúc chuỗi. Như vậy file được viết kết thúc bằng `h` :)))))
+
+Nhanh trí hook vào hàm `a()` xem tham số thứ nhất, không được, chuyển sang `_Z1aP7_JNIEnvP8_1(v6, v7);` thì tìm được, nhờ chatgpt code phần chuyển từ đọc tham số string sang tham số byte:
+
+```
+Java.perform(function() {
+	console.log("Start hooking ...");
+	var baseAddr_a = Module.findBaseAddress("libdefault.so");
+	var FuncAddr_a = baseAddr_a.add(0xab4);
+	Interceptor.attach(FuncAddr_a, {
+		onEnter: function(args) {
+			var byteArray0 = Memory.readByteArray(args[0], 32);
+			var uint8Array = new Uint8Array(byteArray0);
+			var hexString = '';
+                for (var i = 0; i < uint8Array.length; i++) {
+                    hexString += uint8Array[i].toString(16).padStart(2, '0') + ' ';
+                }
+            console.log('Bytes 0: ' + hexString);
+		},
+		onLeave: function(retval) {
+		}
+	});
+});
+```
+
+Chạy frida trước ở tab 1, mở tab 2 chạy tiếp `adb shell am start -n com.stego.saw/com.stego.saw.MainActivity -e open sesame` (gặp lỗi thì save lại code frida 1 lần nữa), nhập input thu được chuỗi byte đầu vào:
+
+![alt text](images/{4F198F10-0ACB-437D-ADB6-F26EBF34C228}.png)
+
+Decode ra đường dẫn `/data/user/0/com.stego.saw/`:
+
+![alt text](images/{4443F1A6-F249-4A92-861D-0582EFB9E4F5}.png)
+
+![alt text](images/{87475388-DB1D-42D9-8303-3EC5DCE1F42A}.png)
