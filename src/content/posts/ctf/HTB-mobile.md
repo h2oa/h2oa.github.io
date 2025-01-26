@@ -411,7 +411,7 @@ Tưởng nhập xong là ra flag nhưng chưa ...
 
 ![alt text](images/{3A758B45-F029-455D-B360-0F002BCBB781}.png)
 
-Tới đây nghỉ đến dùng `nm` đọc địa chỉ hàm `a()` vì nãy dùng `Module.enumerateExports` không tìm được hàm này.
+Tới đây nghĩ đến dùng `nm` đọc địa chỉ hàm `a()` vì nãy dùng `Module.enumerateExports` không tìm được hàm này.
 
 ![alt text](images/{1DDECF9C-9D3C-46F6-9C12-52DD5AB07B1F}.png)
 
