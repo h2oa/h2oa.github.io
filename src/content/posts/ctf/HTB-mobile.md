@@ -460,3 +460,14 @@ Decode ra đường dẫn `/data/user/0/com.stego.saw/`:
 ![alt text](images/{4443F1A6-F249-4A92-861D-0582EFB9E4F5}.png)
 
 ![alt text](images/{87475388-DB1D-42D9-8303-3EC5DCE1F42A}.png)
+
+## Investigator
+
+Nhận được một file backup và folder system:
+
+![alt text](images/{8FC2E9D1-93C2-4AB2-93F0-6B0289CE2A21}.png)
+
+Unpack file backup `backup.ab` thành tar file trước nhưng có password:
+
+![alt text](images/{2B2C035D-AC72-4891-B809-B5971EFDF114}.png)
+
