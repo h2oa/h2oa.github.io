@@ -35,7 +35,7 @@ Thường hay `adb push` vào `data/local/tmp`, rồi chạy frida server lên t
 
 ![alt text](images/{00C43D22-3527-4EB3-8BE3-7C542E947831}.png)
 
-Listen port `-l 0.0.0.0:1337`, chưa rõ tác dụng, chắc sau dùng để debug.
+Listen port `-l 0.0.0.0:1337`, set port cụ thể (có thể dùng bypass port check). Ở client dùng với `-H ip:port`
 
 Frida client cài trong môi trường máy tính:
 
