@@ -25,4 +25,4 @@ Trường hợp này ứng dụng sử dụng Android App Bundles nên có các 
 
 ![alt text](images/{AA9743B1-62CE-4B70-BB30-E24638D0C11D}.png)
 
-Khi phân tích apk bằng jadx chẳng hạn, chỉ cần quan tâm tới base.apk do các file config thường chứa tài nguyên bổ sung như ngôn ngữ, CPU, màn hình, ... (chatgpt).
+Khi phân tích app bằng jadx, base.apk chứa code java, kotlin, ... các lib .so nằm trong file `split_config.<structure>.apk`.
